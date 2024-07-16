@@ -13,11 +13,11 @@ class PepParsePipeline:
 
     def process_item(self, item, spider):
         if "status" not in item:
-            raise DropItem
-        else:
-            key = item["status"]
-            self.status[key] = self.status.get(key, 0) + 1
-            return item
+            raise DropItem('Статус отсутствует в %s' % item)
+
+        key = item["status"]
+        self.status[key] = self.status.get(key, 0) + 1
+        return item
 
     def close_spider(self, spider):
         results_dir = BASE_DIR / 'results'
@@ -32,7 +32,7 @@ class PepParsePipeline:
             )
             writer.writerows(
                 (
-                    ('Статус', 'Колличество'),
+                    ('Статус', 'Количество'),
                     *self.status.items(),
                     ('Total', sum(self.status.values()))
                 )

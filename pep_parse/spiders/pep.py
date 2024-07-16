@@ -3,12 +3,17 @@ from scrapy import Selector
 
 from constans import PATTERN
 from pep_parse.items import PepParseItem
+from scrapy.utils.project import get_project_settings
 
 
 class PepSpider(scrapy.Spider):
     name = 'pep'
-    allowed_domains = ['peps.python.org']
     start_urls = ['https://peps.python.org/']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        settings = get_project_settings()
+        self.allowed_domains = settings.get('ALLOWED_DOMAINS')
 
     def parse(self, response):
         peps_table: Selector = response.css(
